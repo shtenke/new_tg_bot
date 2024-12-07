@@ -20,9 +20,17 @@ def callback_query(call):
     prize_id = call.data
     user_id = call.message.chat.id
 
-    img = manager.get_prize_img(prize_id)
-    with open(f'img/{img}', 'rb') as photo:
-        bot.send_photo(user_id, photo)
+    if  manager.get_winners_count() < 3:
+        res = manager.add_winner()
+        if res:
+            img = manager.get_prize_img()
+            with open(f'img/{img}', 'rb') as photo:
+                bot.send_photo(user_id, photo, caption="Поздравляем! Ты получил картинку!")
+        else:
+            bot.send_message(user_id, 'Ты уже получил картинку!')
+    else:
+        bot.send_message(user_id, "К сожалению, ты не успел получить картинку! Попробуй в следующий раз!)")
+
 
 
 def send_message():
